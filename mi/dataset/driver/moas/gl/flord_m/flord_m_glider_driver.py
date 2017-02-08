@@ -11,28 +11,25 @@ import sys
 from mi.dataset.dataset_driver import DataSetDriver
 from mi.dataset.parser.glider import GliderParser
 
+
 class FlordMDriver:
+    def __init__(self, unused, source_file_path, particle_data_handler, config):
 
-    def __init__(self, basePythonCodePath, sourceFilePath, particleDataHdlrObj, config):
-
-        self._basePythonCodePath = basePythonCodePath
-        self._sourceFilePath = sourceFilePath
-        self._particleDataHdlrObj = particleDataHdlrObj
+        self._unused = unused
+        self._source_file_path = source_file_path
+        self._particle_data_handler = particle_data_handler
         self._config = config
 
     def process(self):
 
-        with open(self._sourceFilePath, 'rb') as stream_handle:
-
-            parser_state = None
-
+        with open(self._source_file_path, 'rb') as stream_handle:
             def exp_callback(exception):
-                self._particleDataHdlrObj.setParticleDataCaptureFailure()
+                self._particle_data_handler.setParticleDataCaptureFailure()
 
             parser = GliderParser(self._config,
                                   stream_handle,
                                   exp_callback)
-            driver = DataSetDriver(parser, self._particleDataHdlrObj)
+            driver = DataSetDriver(parser, self._particle_data_handler)
             driver.processFileStream()
 
-        return self._particleDataHdlrObj
+        return self._particle_data_handler

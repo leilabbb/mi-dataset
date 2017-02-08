@@ -4,22 +4,18 @@
 #
 # Copyright 2014 Raytheon Co.
 ##
-import os
 
-from mi.logging import config
+from mi.core.versioning import version
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.cg_stc_eng.stc.mopak_o_dcl_common_driver import MopakDriver
 from mi.dataset.parser.mopak_o_dcl import \
     MopakODclAccelParserRecoveredDataParticle, \
     MopakODclRateParserRecoveredDataParticle, \
     MopakParticleClassType
-from mi.core.versioning import version
 
 
-@version("0.0.3")
-def parse(basePythonCodePath, sourceFilePath, particleDataHdlrObj):
-    config.add_configuration(os.path.join(basePythonCodePath, 'res', 'config', 'mi-logging.yml'))
-
+@version("0.0.4")
+def parse(unused, source_file_path, particle_data_handler):
     parser_config = {
         DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.mopak_o_dcl',
         DataSetDriverConfigKeys.PARTICLE_CLASS: None,
@@ -31,6 +27,6 @@ def parse(basePythonCodePath, sourceFilePath, particleDataHdlrObj):
              MopakParticleClassType.RATE_PARTICLE_CLASS: MopakODclRateParserRecoveredDataParticle}
     }
 
-    driver = MopakDriver(sourceFilePath, particleDataHdlrObj, parser_config)
+    driver = MopakDriver(source_file_path, particle_data_handler, parser_config)
 
     return driver.process()

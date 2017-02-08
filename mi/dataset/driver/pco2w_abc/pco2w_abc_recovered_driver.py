@@ -22,18 +22,18 @@ from mi.core.versioning import version
 
 
 class Pco2wAbcDriver:
-    def __init__(self, sourceFilePath, particleDataHdlrObj, parser_config):
-        self._sourceFilePath = sourceFilePath
-        self._particleDataHdlrObj = particleDataHdlrObj
+    def __init__(self, source_file_path, particle_data_handler, parser_config):
+        self._source_file_path = source_file_path
+        self._particle_data_handler = particle_data_handler
         self._parser_config = parser_config
 
     def process(self):
         log = get_logger()
 
-        with open(self._sourceFilePath, "r") as file_handle:
+        with open(self._source_file_path, "r") as file_handle:
             def exception_callback(exception):
                 log.debug("Exception: %s", exception)
-                self._particleDataHdlrObj.setParticleDataCaptureFailure()
+                self._particle_data_handler.setParticleDataCaptureFailure()
 
             parser = Pco2wAbcParser(self._parser_config,
                                     file_handle,
@@ -41,17 +41,15 @@ class Pco2wAbcDriver:
                                     None,
                                     None)
 
-            driver = DataSetDriver(parser, self._particleDataHdlrObj)
+            driver = DataSetDriver(parser, self._particle_data_handler)
 
             driver.processFileStream()
 
-        return self._particleDataHdlrObj
+        return self._particle_data_handler
 
 
-@version("15.6.0")
-def parse(basePythonCodePath, sourceFilePath, particleDataHdlrObj):
-    config.add_configuration(os.path.join(basePythonCodePath, 'res', 'config', 'mi-logging.yml'))
-
+@version("15.6.1")
+def parse(unused, source_file_path, particle_data_handler):
     parser_config = {
         DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.pco2w_abc_particles',
         DataSetDriverConfigKeys.PARTICLE_CLASS: None,
@@ -60,9 +58,9 @@ def parse(basePythonCodePath, sourceFilePath, particleDataHdlrObj):
             Pco2wAbcParticleClassKey.POWER_PARTICLE_CLASS: Pco2wAbcPowerDataParticle,
             Pco2wAbcParticleClassKey.INSTRUMENT_PARTICLE_CLASS: Pco2wAbcInstrumentDataParticle,
             Pco2wAbcParticleClassKey.INSTRUMENT_BLANK_PARTICLE_CLASS: Pco2wAbcInstrumentBlankDataParticle,
-            }
+        }
     }
 
-    driver = Pco2wAbcDriver(sourceFilePath, particleDataHdlrObj, parser_config)
+    driver = Pco2wAbcDriver(source_file_path, particle_data_handler, parser_config)
 
     return driver.process()

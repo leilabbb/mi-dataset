@@ -15,13 +15,11 @@ from mi.dataset.dataset_driver import DataSetDriver
 from mi.dataset.parser.nutnr_b import NutnrBParser
 from mi.core.versioning import version
 
-@version("15.7.0")
-def parse(basePythonCodePath, sourceFilePath, particleDataHdlrObj):
-    
-    config.add_configuration(os.path.join(basePythonCodePath, 'res', 'config', 'mi-logging.yml'))
+log = get_logger()
 
-    log = get_logger()
-    
+
+@version("15.7.1")
+def parse(unused, source_file_path, particle_data_handler):
     parser_config = {
         DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.nutnr_b_particles',
         DataSetDriverConfigKeys.PARTICLE_CLASS: [
@@ -32,15 +30,14 @@ def parse(basePythonCodePath, sourceFilePath, particleDataHdlrObj):
 
     def exception_callback(exception):
         log.debug("ERROR: %r", exception)
-        particleDataHdlrObj.setParticleDataCaptureFailure()
-    
-    with open(sourceFilePath, 'r') as stream_handle:
+        particle_data_handler.setParticleDataCaptureFailure()
+
+    with open(source_file_path, 'r') as stream_handle:
         parser = NutnrBParser(parser_config,
                               stream_handle,
                               exception_callback)
-        
-        driver = DataSetDriver(parser, particleDataHdlrObj)
-        driver.processFileStream()    
 
-        
-    return particleDataHdlrObj
+        driver = DataSetDriver(parser, particle_data_handler)
+        driver.processFileStream()
+
+    return particle_data_handler

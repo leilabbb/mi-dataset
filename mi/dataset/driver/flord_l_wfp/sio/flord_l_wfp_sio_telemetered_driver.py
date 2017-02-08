@@ -13,15 +13,15 @@ from mi.dataset.parser.flord_l_wfp_sio import FlordLWfpSioParser
 from mi.core.versioning import version
 
 
-@version("15.6.0")
-def parse(basePythonCodePath, sourceFilePath, particleDataHdlrObj):
+@version("15.6.1")
+def parse(unused, source_file_path, particle_data_handler):
 
-    with open(sourceFilePath, 'rb') as stream_handle:
+    with open(source_file_path, 'rb') as stream_handle:
 
-        driver = FlordLWfpSioTelemeteredDriver(basePythonCodePath, stream_handle, particleDataHdlrObj)
+        driver = FlordLWfpSioTelemeteredDriver(unused, stream_handle, particle_data_handler)
         driver.processFileStream()
 
-    return particleDataHdlrObj
+    return particle_data_handler
 
 
 class FlordLWfpSioTelemeteredDriver(SimpleDatasetDriver):

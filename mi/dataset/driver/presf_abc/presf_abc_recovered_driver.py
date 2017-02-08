@@ -11,27 +11,27 @@ from mi.core.versioning import version
 __author__ = 'Rene Gelinas'
 
 
-@version("1.0.0")
-def parse(base_python_code_path, source_file_path, particle_data_hdlr_obj):
+@version("1.0.1")
+def parse(unused, source_file_path, particle_data_handler):
     """
     This is the method called by Uframe
-    :param base_python_code_path This is the file system location of mi-dataset
+    :param unused
     :param source_file_path This is the full path and filename of the file to
     be parsed
-    :param particle_data_hdlr_obj Java Object to consume the output of the
+    :param particle_data_handler Java Object to consume the output of the
     parser
-    :return particleDataHdlrObj
+    :return particle_data_handler
     """
 
     with open(source_file_path, 'rU') as stream_handle:
 
         # create and instance of the concrete driver class defined below
-        driver = PresfAbcRecoveredDriver(base_python_code_path,
+        driver = PresfAbcRecoveredDriver(unused,
                                          stream_handle,
-                                         particle_data_hdlr_obj)
+                                         particle_data_handler)
         driver.processFileStream()
 
-    return particle_data_hdlr_obj
+    return particle_data_handler
 
 
 class PresfAbcRecoveredDriver(SimpleDatasetDriver):

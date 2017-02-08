@@ -17,16 +17,14 @@ from mi.core.versioning import version
 __author__ = "ehahn"
 
 
-@version("15.7.0")
-def parse(basePythonCodePath, sourceFilePath, particleDataHdlrObj):
+@version("15.7.1")
+def parse(unused, source_file_path, particle_data_handler):
     """
     Initialize the parser configuration and build the driver
-    @param basePythonCodePath - python code path from Java
-    @param sourceFilePath - source file from Java
-    @param particleDataHdlrObj - particle data handler object from Java
+    @param unused - python code path from Java
+    @param source_file_path - source file from Java
+    @param particle_data_handler - particle data handler object from Java
     """
-    config.add_configuration(os.path.join(basePythonCodePath, 'res', 'config', 'mi-logging.yml'))
-
     parser_config = {
         DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.glider',
         DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT: {
@@ -37,6 +35,6 @@ def parse(basePythonCodePath, sourceFilePath, particleDataHdlrObj):
         }
     }
 
-    driver = GliderEngineeringDriver(sourceFilePath, particleDataHdlrObj, parser_config)
+    driver = GliderEngineeringDriver(source_file_path, particle_data_handler, parser_config)
 
     return driver.process()
